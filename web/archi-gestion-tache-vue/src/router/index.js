@@ -6,6 +6,7 @@ import AddTask from '@/views/AddTask.vue'
 import EditTask from '@/views/EditTask.vue'
 import TaskList from '@/views/TaskList.vue'
 import Home from '@/views/Home.vue'
+import MyTasks from '@/views/MyTasks.vue'
 
 const routes = [
 { path: '/login', component: Login },
@@ -13,7 +14,8 @@ const routes = [
 { path: '/addTask', component: AddTask },
 { path: '/editTask', component: EditTask },
 { path: '/taskList', component: TaskList },
-{ path: '/home', component: Home },
+{ path: '/', component: Home },
+{ path: '/myTasks', component: MyTasks },
 ]
 
 const router = createRouter({
