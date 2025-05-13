@@ -8,13 +8,17 @@
         </p>
 
         <form @submit.prevent="handleLogin">
+          <div v-if="error" class="error-message">
+            {{ error }}
+          </div>
+          
           <div class="input-group">
-            <label for="username" class="input-label">Nom d'utilisateur</label>
+            <label for="email" class="input-label">Email</label>
             <input
-              type="text"
-              id="username"
-              v-model="username"
-              placeholder="Entrez votre nom d'utilisateur"
+              type="email"
+              id="email"
+              v-model="email"
+              placeholder="Entrez votre email"
               class="input-field"
               required
             />
@@ -45,9 +49,53 @@
 </template>
 
 <script>
+import { login } from '@/functions/login';
+import { setJWT } from '@/functions/config';
+import { useRouter } from 'vue-router';
 
+export default {
+  name: 'LoginView',
+  data() {
+    return {
+      email: '',
+      password: '',
+      error: null
+    }
+  },
+  setup() {
+    const router = useRouter();
+    return { router };
+  },
+  methods: {
+    async handleLogin() {
+      try {
+        const response = await login(this.email, this.password);
+        
+        if (response && response.access_token) {
+          // Stocker le JWT dans la variable définie dans config.js
+          setJWT(response.access_token);
+          
+          // Rediriger vers la page d'accueil après connexion réussie
+          this.router.push('/');
+        } else {
+          this.error = 'Informations d\'identification invalides';
+        }
+      } catch (error) {
+        this.error = 'Erreur lors de la connexion';
+        console.error('Erreur de connexion:', error);
+      }
+    }
+  }
+}
 </script>
 
 <style scoped>
-
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  text-align: center;
+}
 </style>
