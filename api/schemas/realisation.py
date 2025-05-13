@@ -7,6 +7,11 @@ class RealisationCreate(BaseModel):
     idPartenaire: int
     idTache: int
 
+class RealisationUpdate(BaseModel):
+    dateDebutRealisation: datetime | None = None
+    dateFinRealisation: datetime | None = None
+    idPartenaire: int | None = None
+
 class RealisationResponse(RealisationCreate):
     idRealisation: int
 

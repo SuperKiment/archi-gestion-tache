@@ -19,7 +19,7 @@ pip install -r .\requirements.txt
 ## Lancer :
 
 ```
-uvicorn app.main:app --reload
+uvicorn api.main:app --reload
 ```
 
 ## Accéder au Swagger :
