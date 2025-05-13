@@ -4,7 +4,7 @@ from api.models.tache import Tache
 from api.schemas.tache import TacheCreate
 from fastapi import HTTPException
 import logging
-from api.utils import retry_db_operation
+from api.utils.utils import retry_db_operation
 
 logger = logging.getLogger(__name__)
 

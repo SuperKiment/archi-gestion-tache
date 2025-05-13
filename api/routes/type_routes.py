@@ -3,8 +3,9 @@ from sqlalchemy.orm import Session
 from api.schemas.type import TypeCreate, TypeResponse
 from api.crud import type_crud
 from api.database import get_db
+from api.utils.auth import verify_token
 
-router = APIRouter(prefix="/types", tags=["Types"])
+router = APIRouter(prefix="/types", tags=["Types"], dependencies=[Depends(verify_token)])
 
 @router.post("/", response_model=TypeResponse)
 def create_type_route(data: TypeCreate, db: Session = Depends(get_db)):

@@ -7,6 +7,7 @@ from api.routes import (
     info_routes,
     type_routes,
     realisation_routes,
+    auth_routes
 )
 
 # Création des tables dans la base de données
@@ -43,6 +44,7 @@ app.include_router(tache_routes.router)
 app.include_router(type_routes.router)
 app.include_router(realisation_routes.router)
 app.include_router(info_routes.router)
+app.include_router(auth_routes.router)
 
 @app.on_event("startup")
 async def startup_event():

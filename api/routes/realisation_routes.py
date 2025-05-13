@@ -2,9 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from api.schemas.realisation import RealisationCreate, RealisationResponse
 from api.crud import realisation_crud
+from api.utils.auth import verify_token
+
 from api.database import get_db
 
-router = APIRouter(prefix="/realisation", tags=["Realisation"])
+router = APIRouter(prefix="/realisation", tags=["Realisation"], dependencies=[Depends(verify_token)])
 
 @router.post("/", response_model=RealisationResponse)
 def create_realisation_route(data: RealisationCreate, db: Session = Depends(get_db)):

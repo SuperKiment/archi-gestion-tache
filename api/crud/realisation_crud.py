@@ -3,7 +3,7 @@ from api.models.realisation import Realisation
 from api.schemas.realisation import RealisationCreate
 from sqlalchemy.exc import IntegrityError
 import logging
-from api.utils import retry_db_operation
+from api.utils.utils import retry_db_operation
 
 logger = logging.getLogger(__name__)
 

@@ -3,8 +3,9 @@ from sqlalchemy.orm import Session
 from api.database import get_db
 from api.schemas.tache import TacheCreate, TacheRead
 from api.crud import tache_crud
+from api.utils.auth import verify_token
 
-router = APIRouter(prefix="/taches", tags=["Taches"])
+router = APIRouter(prefix="/taches", tags=["Taches"], dependencies=[Depends(verify_token)])
 
 @router.post("/", response_model=TacheRead)
 def create_tache_route(tache_data: TacheCreate, id_gestionnaire: int, db: Session = Depends(get_db)):

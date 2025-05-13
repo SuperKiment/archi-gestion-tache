@@ -3,7 +3,7 @@ from api.models.type import Type
 from api.schemas.type import TypeCreate
 from fastapi import HTTPException
 import logging
-from api.utils import retry_db_operation
+from api.utils.utils import retry_db_operation
 logger = logging.getLogger(__name__)
 
 @retry_db_operation(max_retries=3, delay=2)
