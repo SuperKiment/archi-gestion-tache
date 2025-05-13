@@ -2,13 +2,15 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from api.database import get_db
+from api.utils.auth import verify_token
 import logging
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix="/info",
-    tags=["info"]
+    tags=["info"],
+    dependencies=[Depends(verify_token)]
 )
 
 @router.get("/table/{table_name}")

@@ -3,8 +3,10 @@ from sqlalchemy.orm import Session
 from api.database import get_db
 from api.schemas.journal import JournalCreate, JournalRead
 from api.crud import journal_crud
+from api.utils.auth import verify_token
 
-router = APIRouter(prefix="/journaux", tags=["Journaux"])
+
+router = APIRouter(prefix="/journaux", tags=["Journaux"], dependencies=[Depends(verify_token)])
 
 @router.post("/", response_model=JournalRead)
 def create_journal_route(data: JournalCreate, db: Session = Depends(get_db)):

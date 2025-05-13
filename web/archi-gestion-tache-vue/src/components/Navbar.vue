@@ -2,7 +2,7 @@
   <nav class="navbar">
     <div class="navbar-container">
       <div class="navbar-logo">
-        <router-link to="/home">
+        <router-link to="/">
           <div class="logo-container">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="logo-icon">
               <path d="M5.566 4.657A4.505 4.505 0 016.75 4.5h10.5c.41 0 .806.055 1.183.157A3 3 0 0015.75 3h-7.5a3 3 0 00-2.684 1.657zM2.25 12a3 3 0 013-3h13.5a3 3 0 013 3v6a3 3 0 01-3 3H5.25a3 3 0 01-3-3v-6zm3 0a.75.75 0 00-.75.75v6c0 .414.336.75.75.75h13.5a.75.75 0 00.75-.75v-6a.75.75 0 00-.75-.75H5.25z" />
@@ -13,7 +13,7 @@
       </div>
       
       <div class="navbar-links">
-        <router-link to="/home" class="nav-link">Accueil</router-link>
+        <router-link to="/" class="nav-link">Accueil</router-link>
       </div>
       
       <div class="navbar-auth">

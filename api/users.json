@@ -1,0 +1,18 @@
+[
+  {
+    "id": 2,
+    "nom": "K\u00e9vin",
+    "prenom": "Mironneaux",
+    "email": "kevin.m@orange.fr",
+    "password": "$2b$12$9bc84wBZASimNVwLJ1jN0.VLBt5cbTlRSVASjvSiNfS3u3YhPybfW",
+    "role": "Gestionnaire"
+  },
+  {
+    "id": 3,
+    "nom": "Solange",
+    "prenom": "Toscane",
+    "email": "solange.t@orange.fr",
+    "password": "$2b$12$Lkg3KFC1PhrAMyTOccWWy.ZNbrmshCeMOanRlUhiIrteYnZTWb.o.",
+    "role": "Prestataire"
+  }
+]
