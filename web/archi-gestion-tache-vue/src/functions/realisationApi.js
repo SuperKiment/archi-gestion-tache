@@ -8,7 +8,7 @@ export const getRealisations = async () => {
   try {
     const response = await fetch(`${API_URL}/realisation/`, {
       method: 'GET',
-      headers: defaultHeaders,
+      headers: defaultHeaders(),
     });
     
     if (!response.ok) {
@@ -30,7 +30,7 @@ export const getRealisationById = async (id) => {
   try {
     const response = await fetch(`${API_URL}/realisation/${id}`, {
       method: 'GET',
-      headers: defaultHeaders,
+      headers: defaultHeaders(),
     });
     
     if (!response.ok) {
@@ -52,7 +52,7 @@ export const getRealisationByTacheId = async (idTache) => {
   try {
     const response = await fetch(`${API_URL}/realisation/tache/${idTache}`, {
       method: 'GET',
-      headers: defaultHeaders,
+      headers: defaultHeaders(),
     });
     
     if (!response.ok) {
@@ -74,7 +74,7 @@ export const createRealisation = async (realisationData) => {
   try {
     const response = await fetch(`${API_URL}/realisation/`, {
       method: 'POST',
-      headers: defaultHeaders,
+      headers: defaultHeaders(),
       body: JSON.stringify(realisationData),
     });
     
@@ -98,7 +98,7 @@ export const updateRealisation = async (id, realisationData) => {
   try {
     const response = await fetch(`${API_URL}/realisation/${id}`, {
       method: 'PUT',
-      headers: defaultHeaders,
+      headers: defaultHeaders(),
       body: JSON.stringify(realisationData),
     });
     
@@ -121,7 +121,7 @@ export const deleteRealisation = async (id) => {
   try {
     const response = await fetch(`${API_URL}/realisation/${id}`, {
       method: 'DELETE',
-      headers: defaultHeaders,
+      headers: defaultHeaders(),
     });
     
     if (!response.ok) {

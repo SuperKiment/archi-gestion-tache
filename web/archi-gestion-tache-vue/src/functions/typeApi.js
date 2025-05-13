@@ -8,7 +8,7 @@ export const getTypes = async () => {
   try {
     const response = await fetch(`${API_URL}/types/`, {
       method: 'GET',
-      headers: defaultHeaders,
+      headers: defaultHeaders(),
     });
     
     if (!response.ok) {

@@ -5,9 +5,29 @@
 // URL de base de l'API
 export const API_URL = 'http://localhost:8000';
 
+// Variable pour stocker le token JWT
+let JWT = '';
+
+// Fonction pour définir le token JWT
+export const setJWT = (token) => {
+  JWT = token;
+};
+
+// Fonction pour récupérer le token JWT
+export const getJWT = () => JWT;
+
 // Headers par défaut pour les requêtes
-export const defaultHeaders = {
-  'Content-Type': 'application/json',
+export const defaultHeaders = () => {
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+
+  // Ajouter le token JWT s'il existe
+  if (JWT) {
+    headers['Authorization'] = `Bearer ${JWT}`;
+  }
+
+  return headers;
 };
 
 // Fonction utilitaire pour gérer les erreurs des requêtes
@@ -21,7 +41,13 @@ export const handleApiError = (error) => {
       const statusMatch = error.message.match(/Erreur HTTP: (\d+)/);
       const status = statusMatch ? parseInt(statusMatch[1]) : 500;
       
-      if (status === 404) {
+      if (status === 401 || status === 403) {
+        return {
+          error: true,
+          message: 'Authentification requise ou accès non autorisé',
+          status
+        };
+      } else if (status === 404) {
         return {
           error: true,
           message: 'Ressource non trouvée',

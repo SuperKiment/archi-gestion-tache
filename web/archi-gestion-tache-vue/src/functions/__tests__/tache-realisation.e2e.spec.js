@@ -2,7 +2,8 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { getTaches, createTache, deleteTache } from '../tacheApi'
 import { createRealisation, getRealisationByTacheId, updateRealisation } from '../realisationApi'
 import { getTypes } from '../typeApi'
-import { API_URL } from '../config'
+import { login } from '../login'
+import { setJWT } from '../config'
 
 describe('Tests E2E d\'intégration Tâche-Réalisation', () => {
   // Données de test
@@ -25,6 +26,18 @@ describe('Tests E2E d\'intégration Tâche-Réalisation', () => {
     try {
       console.log('🚀 Initialisation des tests d\'intégration Tâche-Réalisation...');
       
+      // Authentification pour obtenir le token JWT
+      const email = 'kevin.m@orange.fr'
+      const password = 'admin'
+      
+      const loginResult = await login(email, password)
+      if (loginResult.access_token) {
+        setJWT(loginResult.access_token)
+        console.log('🔑 Authentification réussie')
+      } else {
+        throw new Error('Échec de l\'authentification')
+      }
+
       // Récupérer un type existant pour créer des tâches
       const types = await getTypes();
       if (types.length === 0) {

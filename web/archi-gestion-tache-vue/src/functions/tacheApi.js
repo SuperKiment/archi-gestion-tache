@@ -8,7 +8,7 @@ export const getTaches = async () => {
   try {
     const response = await fetch(`${API_URL}/taches/`, {
       method: 'GET',
-      headers: defaultHeaders,
+      headers: defaultHeaders(),
     });
     
     if (!response.ok) {
@@ -30,7 +30,7 @@ export const getTacheById = async (id) => {
   try {
     const response = await fetch(`${API_URL}/taches/${id}`, {
       method: 'GET',
-      headers: defaultHeaders,
+      headers: defaultHeaders(),
     });
     
     if (!response.ok) {
@@ -53,7 +53,7 @@ export const createTache = async (tacheData, idGestionnaire) => {
   try {
     const response = await fetch(`${API_URL}/taches/?id_gestionnaire=${idGestionnaire}`, {
       method: 'POST',
-      headers: defaultHeaders,
+      headers: defaultHeaders(),
       body: JSON.stringify(tacheData),
     });
     
@@ -77,7 +77,7 @@ export const updateTache = async (id, tacheData) => {
   try {
     const response = await fetch(`${API_URL}/taches/${id}`, {
       method: 'PUT',
-      headers: defaultHeaders,
+      headers: defaultHeaders(),
       body: JSON.stringify(tacheData),
     });
     
@@ -100,7 +100,7 @@ export const deleteTache = async (id) => {
   try {
     const response = await fetch(`${API_URL}/taches/${id}`, {
       method: 'DELETE',
-      headers: defaultHeaders,
+      headers: defaultHeaders(),
     });
     
     if (!response.ok) {
