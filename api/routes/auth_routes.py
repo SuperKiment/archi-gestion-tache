@@ -47,8 +47,17 @@ def login(email: str = Form(...), password: str = Form(...)):
     users = load_users()
     user = next((u for u in users if u["email"] == email), None)
     if user and pwd_context.verify(password, user["password"]):
-        access_token = create_access_token(data={"sub": email})
-        return {"access_token": access_token, "token_type": "bearer"}
+        access_token = create_access_token(data={
+            "sub": email,
+            "user_id": user["id"],
+            "role": user["role"]
+        })
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user_id": user["id"],
+            "role": user["role"]
+        }
     raise HTTPException(status_code=401, detail="Identifiants invalides")
 
 @router.get("/users")

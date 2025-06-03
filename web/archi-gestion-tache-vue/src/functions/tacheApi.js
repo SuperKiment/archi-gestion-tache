@@ -75,19 +75,28 @@ export const createTache = async (tacheData, idGestionnaire) => {
  */
 export const updateTache = async (id, tacheData) => {
   try {
+    const headers = {
+      ...defaultHeaders(),
+      'Content-Type': 'application/json'
+    };
+
     const response = await fetch(`${API_URL}/taches/${id}`, {
       method: 'PUT',
-      headers: defaultHeaders(),
+      headers,
       body: JSON.stringify(tacheData),
     });
     
     if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      if (errorData && errorData.detail) {
+        throw new Error(errorData.detail);
+      }
       throw new Error(`Erreur HTTP: ${response.status}`);
     }
     
     return await response.json();
   } catch (error) {
-    return handleApiError(error);
+    throw error; // Propager l'erreur pour qu'elle soit gérée par handleApiError
   }
 };
 

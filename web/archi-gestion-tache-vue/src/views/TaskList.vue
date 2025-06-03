@@ -2,23 +2,27 @@
   <div class="task-list">
     <h1 class="title">Mes Tâches</h1>
 
+    <div v-if="error" class="error-message">
+      {{ error }}
+    </div>
+
     <div v-if="tasks.length === 0" class="empty-message">
       Aucune tâche pour le moment.
     </div>
 
     <div v-else class="task-grid">
-      <div v-for="task in tasks" :key="task.id" class="task-card">
-        <h2 class="task-title">{{ task.title }}</h2>
+      <div v-for="task in tasks" :key="task.idTache" class="task-card">
+        <h2 class="task-title">{{ task.titre }}</h2>
         <p class="task-desc">{{ task.description }}</p>
 
         <div class="task-meta">
-          <span class="priority" :class="task.priority">{{ task.priority }}</span>
-          <span class="due-date">Échéance : {{ formatDate(task.dueDate) }}</span>
+          <span class="priority" :class="getPriorityClass(task.priorite)">{{ getPriorityLabel(task.priorite) }}</span>
+          <span class="due-date">Échéance : {{ formatDate(task.dateEcheance) }}</span>
         </div>
 
         <div class="task-actions">
-          <router-link :to="`/editTask/${task.id}`" class="btn btn-edit">Modifier</router-link>
-          <button class="btn btn-delete">Supprimer</button>
+          <router-link :to="`/editTask/${task.idTache}`" class="btn btn-edit">Modifier</router-link>
+          <button @click="handleDelete(task.idTache)" class="btn btn-delete">Supprimer</button>
         </div>
       </div>
     </div>
@@ -26,13 +30,14 @@
 </template>
 
 <script>
-import { getTaches } from '@/functions/tacheApi';
+import { getTaches, deleteTache } from '@/functions/tacheApi';
 
 export default {
   name: 'TaskList',
   data() {
     return {
-      tasks: []
+      tasks: [],
+      error: null
     }
   },
   methods: {
@@ -40,23 +45,45 @@ export default {
       if (!date) return '';
       return new Date(date).toLocaleDateString('fr-FR');
     },
+    getPriorityClass(priority) {
+      switch(priority) {
+        case 1: return 'haute';
+        case 2: return 'moyenne';
+        case 3: return 'basse';
+        default: return 'moyenne';
+      }
+    },
+    getPriorityLabel(priority) {
+      switch(priority) {
+        case 1: return 'Haute';
+        case 2: return 'Moyenne';
+        case 3: return 'Basse';
+        default: return 'Moyenne';
+      }
+    },
     async fetchTasks() {
-      // Dans une application réelle, cette méthode ferait un appel API
-      // Pour l'exemple, nous utilisons des données statiques
-      this.tasks = [];
-
       try {
         const resultat = await getTaches();
         if (resultat.error) {
-          this.erreur = resultat.message;
+          this.error = resultat.message;
         } else {
           this.tasks = resultat;
-          this.erreur = null;
+          this.error = null;
         }
       } catch (err) {
-        this.erreur = "Erreur lors du chargement des tâches";
+        this.error = "Erreur lors du chargement des tâches";
         console.error(err);
-      } finally {
+      }
+    },
+    async handleDelete(taskId) {
+      if (confirm('Êtes-vous sûr de vouloir supprimer cette tâche ?')) {
+        try {
+          await deleteTache(taskId);
+          await this.fetchTasks(); // Recharger la liste après suppression
+        } catch (error) {
+          this.error = "Erreur lors de la suppression de la tâche";
+          console.error(error);
+        }
       }
     }
   },
@@ -86,6 +113,15 @@ export default {
   border-radius: 8px;
   font-size: 1.1rem;
   color: #666;
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #e53935;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  text-align: center;
 }
 
 .task-grid {

@@ -7,7 +7,7 @@
           Opti-Tache vous permet de publier, attribuer et suivre les tâches sous-traitées à vos partenaires en toute simplicité.
         </p>
         <div class="hero-buttons">
-          <router-link to="/login" class="btn btn-primary">Commencer</router-link>
+          <router-link :to="isLoggedIn ? '/dashboardGestionnaire' : '/login'" class="btn btn-primary">Commencer</router-link>
         </div>
       </div>
     </section>
@@ -28,7 +28,7 @@
       <div class="cta-content">
         <h2 class="cta-title">Prêt à optimiser la gestion de vos tâches sous-traitées ?</h2>
         <p class="cta-description">Commencez dès aujourd'hui à utiliser Opti-Tache pour simplifier la collaboration avec vos partenaires.</p>
-        <router-link to="/login" class="btn btn-primary cta-button">Commencer maintenant</router-link>
+        <router-link :to="isLoggedIn ? '/dashboardGestionnaire' : '/login'" class="btn btn-primary cta-button">Commencer maintenant</router-link>
       </div>
     </section>
   </div>
@@ -36,7 +36,20 @@
 
 <script>
 export default {
-  name: 'Home'
+  name: 'Home',
+  data() {
+    return {
+      isLoggedIn: false
+    }
+  },
+  created() {
+    this.checkLoginStatus()
+  },
+  methods: {
+    checkLoginStatus() {
+      this.isLoggedIn = !!localStorage.getItem('jwt_token')
+    }
+  }
 }
 </script>
 

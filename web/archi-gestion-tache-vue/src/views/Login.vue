@@ -72,8 +72,10 @@ export default {
         const response = await login(this.email, this.password);
         
         if (response && response.access_token) {
-          // Stocker le JWT dans la variable définie dans config.js
+          // Stocker le JWT et les informations de l'utilisateur
           setJWT(response.access_token);
+          localStorage.setItem('user_id', response.user_id);
+          localStorage.setItem('user_role', response.role);
           
           // Rediriger vers la page d'accueil après connexion réussie
           this.router.push('/');

@@ -12,7 +12,7 @@ const routes = [
 { path: '/login', component: Login },
 { path: '/dashboardGestionnaire', component: DashboardGestionnaire },
 { path: '/addTask', component: AddTask },
-{ path: '/editTask', component: EditTask },
+{ path: '/editTask/:id', component: EditTask },
 { path: '/taskList', component: TaskList },
 { path: '/', component: Home },
 { path: '/myTasks', component: MyTasks },

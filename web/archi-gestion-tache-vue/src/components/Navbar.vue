@@ -17,7 +17,12 @@
       </div>
       
       <div class="navbar-auth">
-        <router-link to="/login" class="btn btn-secondary">Connexion</router-link>
+        <template v-if="isLoggedIn">
+          <button @click="handleLogout" class="btn btn-secondary">Se déconnecter</button>
+        </template>
+        <template v-else>
+          <router-link to="/login" class="btn btn-secondary">Connexion</router-link>
+        </template>
       </div>
     </div>
   </nav>
@@ -25,7 +30,28 @@
 
 <script>
 export default {
-  name: 'Navbar'
+  name: 'Navbar',
+  data() {
+    return {
+      isLoggedIn: false
+    }
+  },
+  created() {
+    this.checkLoginStatus()
+  },
+  methods: {
+    checkLoginStatus() {
+      this.isLoggedIn = !!localStorage.getItem('jwt_token')
+    },
+    handleLogout() {
+      // Supprimer toutes les informations de l'utilisateur
+      localStorage.removeItem('jwt_token');
+      localStorage.removeItem('user_id');
+      localStorage.removeItem('user_role');
+      this.isLoggedIn = false;
+      this.$router.push('/login');
+    }
+  }
 }
 </script>
 

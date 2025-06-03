@@ -45,75 +45,28 @@ export const defaultHeaders = () => {
 export const handleApiError = (error) => {
   console.error('Erreur API:', error);
   
-  // Gérer le cas où l'erreur est une instance d'Error
-  if (error instanceof Error) {
-    // Vérifier si c'est une erreur HTTP
-    if (error.message.startsWith('Erreur HTTP:')) {
-      const statusMatch = error.message.match(/Erreur HTTP: (\d+)/);
-      const status = statusMatch ? parseInt(statusMatch[1]) : 500;
-      
-      if (status === 401 || status === 403) {
-        return {
-          error: true,
-          message: 'Authentification requise ou accès non autorisé',
-          status
-        };
-      } else if (status === 404) {
-        return {
-          error: true,
-          message: 'Ressource non trouvée',
-          status
-        };
-      } else if (status === 422) {
-        return {
-          error: true,
-          message: 'Données invalides',
-          status
-        };
-      } else if (status >= 500) {
-        return {
-          error: true,
-          message: 'Erreur serveur',
-          status
-        };
-      } else {
-        return {
-          error: true,
-          message: `Erreur HTTP ${status}`,
-          status
-        };
-      }
-    }
-    
-    // Pour les autres types d'erreurs
+  // Si l'erreur est une chaîne de caractères, la retourner directement
+  if (typeof error === 'string') {
     return {
       error: true,
-      message: error.message || 'Une erreur inconnue est survenue',
+      message: error,
       status: 0
     };
   }
-  
-  // Gestion des réponses d'API plus structurées (en cas d'utilisation d'axios)
-  if (error.response) {
-    // La requête a été faite et le serveur a répondu avec un code d'erreur
+
+  // Si l'erreur est un objet avec une propriété message
+  if (error && typeof error === 'object' && error.message) {
     return {
       error: true,
-      message: error.response.data?.detail || 'Erreur serveur',
-      status: error.response.status,
-    };
-  } else if (error.request) {
-    // La requête a été faite mais aucune réponse n'a été reçue
-    return {
-      error: true,
-      message: 'Pas de réponse du serveur',
-      status: 0,
-    };
-  } else {
-    // Pour tout autre type d'erreur
-    return {
-      error: true,
-      message: 'Erreur inconnue lors de la communication avec le serveur',
-      status: 0,
+      message: error.message,
+      status: error.status || 0
     };
   }
+  
+  // Pour les autres types d'erreurs
+  return {
+    error: true,
+    message: 'Une erreur inconnue est survenue',
+    status: 0
+  };
 }; 
