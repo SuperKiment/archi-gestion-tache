@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import { getTaches } from '@/functions/tacheApi';
+
 export default {
   name: 'TaskList',
   data() {
@@ -38,29 +40,28 @@ export default {
       if (!date) return '';
       return new Date(date).toLocaleDateString('fr-FR');
     },
-    fetchTasks() {
+    async fetchTasks() {
       // Dans une application réelle, cette méthode ferait un appel API
       // Pour l'exemple, nous utilisons des données statiques
-      this.tasks = [
-        {
-          id: 1,
-          title: 'Terminer le rapport',
-          description: 'Finaliser le rapport trimestriel pour la réunion',
-          priority: 'haute',
-          dueDate: '2023-12-20'
-        },
-        {
-          id: 2,
-          title: 'Préparer la présentation',
-          description: 'Créer les slides pour la démonstration du produit',
-          priority: 'moyenne',
-          dueDate: '2023-12-15'
+      this.tasks = [];
+
+      try {
+        const resultat = await getTaches();
+        if (resultat.error) {
+          this.erreur = resultat.message;
+        } else {
+          this.tasks = resultat;
+          this.erreur = null;
         }
-      ];
+      } catch (err) {
+        this.erreur = "Erreur lors du chargement des tâches";
+        console.error(err);
+      } finally {
+      }
     }
   },
-  mounted() {
-    this.fetchTasks();
+  async mounted() {
+    await this.fetchTasks();
   }
 }
 </script>

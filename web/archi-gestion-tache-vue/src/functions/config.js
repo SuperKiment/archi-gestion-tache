@@ -11,10 +11,21 @@ let JWT = '';
 // Fonction pour définir le token JWT
 export const setJWT = (token) => {
   JWT = token;
+  localStorage.setItem('jwt_token', token);
 };
 
 // Fonction pour récupérer le token JWT
-export const getJWT = () => JWT;
+export const getJWT = () => {
+  if (!JWT) {
+    JWT = localStorage.getItem('jwt_token') || '';
+  }
+  return JWT;
+};
+
+export const removeJWT = () => {
+  JWT = '';
+  localStorage.removeItem('jwt_token');
+};
 
 // Headers par défaut pour les requêtes
 export const defaultHeaders = () => {
@@ -23,8 +34,8 @@ export const defaultHeaders = () => {
   };
 
   // Ajouter le token JWT s'il existe
-  if (JWT) {
-    headers['Authorization'] = `Bearer ${JWT}`;
+  if (getJWT()) {
+    headers['Authorization'] = `Bearer ${getJWT()}`;
   }
 
   return headers;

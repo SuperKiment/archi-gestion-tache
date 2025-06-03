@@ -3,7 +3,7 @@
  * Ce fichier est à titre d'exemple et n'est pas destiné à être utilisé en production
  */
 
-import { tacheApi, typeApi, journalApi, realisationApi, getTableInfo } from './index';
+import { tacheApi } from './tacheApi';
 
 /**
  * Exemple d'utilisation des API des tâches dans un composant Vue
