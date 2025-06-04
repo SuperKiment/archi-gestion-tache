@@ -2,6 +2,37 @@
   <div class="task-list">
     <h1 class="title">Mes Tâches</h1>
 
+    <div class="filters-container">
+      <div class="search-box">
+        <input 
+          type="text" 
+          v-model="searchQuery" 
+          placeholder="Rechercher une tâche..."
+          class="search-input"
+        >
+      </div>
+
+      <div class="filters">
+        <select v-model="priorityFilter" class="filter-select">
+          <option value="">Toutes les priorités</option>
+          <option value="1">Haute priorité</option>
+          <option value="2">Priorité moyenne</option>
+          <option value="3">Basse priorité</option>
+        </select>
+
+        <select v-model="sortBy" class="filter-select">
+          <option value="dateEcheance">Trier par date d'échéance</option>
+          <option value="priorite">Trier par priorité</option>
+          <option value="titre">Trier par titre</option>
+        </select>
+
+        <select v-model="sortOrder" class="filter-select">
+          <option value="asc">Croissant</option>
+          <option value="desc">Décroissant</option>
+        </select>
+      </div>
+    </div>
+
     <div v-if="error" class="error-message">
       {{ error }}
     </div>
@@ -11,7 +42,7 @@
     </div>
 
     <div v-else class="task-grid">
-      <div v-for="task in tasks" :key="task.idTache" class="task-card">
+      <div v-for="task in filteredAndSortedTasks" :key="task.idTache" class="task-card">
         <h2 class="task-title">{{ task.titre }}</h2>
         <p class="task-desc">{{ task.description }}</p>
 
@@ -37,7 +68,47 @@ export default {
   data() {
     return {
       tasks: [],
-      error: null
+      error: null,
+      searchQuery: '',
+      priorityFilter: '',
+      sortBy: 'dateEcheance',
+      sortOrder: 'asc'
+    }
+  },
+  computed: {
+    filteredAndSortedTasks() {
+      let result = [...this.tasks];
+
+      // Filtre par recherche
+      if (this.searchQuery) {
+        const query = this.searchQuery.toLowerCase();
+        result = result.filter(task => 
+          task.titre.toLowerCase().includes(query) || 
+          task.description.toLowerCase().includes(query)
+        );
+      }
+
+      // Filtre par priorité
+      if (this.priorityFilter) {
+        result = result.filter(task => task.priorite === parseInt(this.priorityFilter));
+      }
+
+      // Tri
+      result.sort((a, b) => {
+        let comparison = 0;
+        
+        if (this.sortBy === 'dateEcheance') {
+          comparison = new Date(a.dateEcheance) - new Date(b.dateEcheance);
+        } else if (this.sortBy === 'priorite') {
+          comparison = a.priorite - b.priorite;
+        } else if (this.sortBy === 'titre') {
+          comparison = a.titre.localeCompare(b.titre);
+        }
+
+        return this.sortOrder === 'asc' ? comparison : -comparison;
+      });
+
+      return result;
     }
   },
   methods: {
@@ -219,5 +290,49 @@ export default {
 
 .btn-delete:hover {
   background-color: #ffcdd2;
+}
+
+.filters-container {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.search-box {
+  width: 100%;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-select {
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: white;
+  min-width: 200px;
+}
+
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+  }
+  
+  .filter-select {
+    width: 100%;
+  }
 }
 </style>

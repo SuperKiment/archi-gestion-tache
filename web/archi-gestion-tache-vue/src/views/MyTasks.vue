@@ -2,16 +2,42 @@
   <div class="container">
     <h1 class="title">Mes Tâches</h1>
 
-    <div class="flex gap-2 mt-4 mb-6">
-      <button
-        v-for="option in filtreOptions"
-        :key="option.value"
-        class="btn"
-        :class="filtreActif === option.value ? 'btn-primary' : 'btn-secondary'"
-        @click="filtreActif = option.value"
-      >
-        {{ option.label }}
-      </button>
+    <div class="filters-container">
+      <div class="search-box">
+        <input 
+          type="text" 
+          v-model="searchQuery" 
+          placeholder="Rechercher une tâche..."
+          class="search-input"
+        >
+      </div>
+
+      <div class="filters">
+        <div class="filter-group">
+          <button
+            v-for="option in filtreOptions"
+            :key="option.value"
+            class="btn"
+            :class="filtreActif === option.value ? 'btn-primary' : 'btn-secondary'"
+            @click="filtreActif = option.value"
+          >
+            {{ option.label }}
+          </button>
+        </div>
+
+        <div class="filter-group">
+          <select v-model="sortBy" class="filter-select">
+            <option value="echeance">Trier par date d'échéance</option>
+            <option value="titre">Trier par titre</option>
+            <option value="statut">Trier par statut</option>
+          </select>
+
+          <select v-model="sortOrder" class="filter-select">
+            <option value="asc">Croissant</option>
+            <option value="desc">Décroissant</option>
+          </select>
+        </div>
+      </div>
     </div>
 
     <div v-if="tachesFiltrees.length === 0" class="text-gray">
@@ -50,13 +76,14 @@
   </div>
 </template>
 
-
-
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 
 const taches = ref([])
 const filtreActif = ref('toutes')
+const searchQuery = ref('')
+const sortBy = ref('echeance')
+const sortOrder = ref('asc')
 
 const filtreOptions = [
   { label: 'Toutes', value: 'toutes' },
@@ -94,13 +121,41 @@ onMounted(() => {
 })
 
 const tachesFiltrees = computed(() => {
+  let result = [...taches.value]
+
+  // Filtre par statut
   if (filtreActif.value === 'encours') {
-    return taches.value.filter(t => t.statut !== 'Complétée')
+    result = result.filter(t => t.statut !== 'Complétée')
   }
   if (filtreActif.value === 'terminees') {
-    return taches.value.filter(t => t.statut === 'Complétée')
+    result = result.filter(t => t.statut === 'Complétée')
   }
-  return taches.value
+
+  // Filtre par recherche
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    result = result.filter(tache => 
+      tache.titre.toLowerCase().includes(query) || 
+      tache.description.toLowerCase().includes(query)
+    )
+  }
+
+  // Tri
+  result.sort((a, b) => {
+    let comparison = 0
+    
+    if (sortBy.value === 'echeance') {
+      comparison = new Date(a.echeance) - new Date(b.echeance)
+    } else if (sortBy.value === 'titre') {
+      comparison = a.titre.localeCompare(b.titre)
+    } else if (sortBy.value === 'statut') {
+      comparison = a.statut.localeCompare(b.statut)
+    }
+
+    return sortOrder.value === 'asc' ? comparison : -comparison
+  })
+
+  return result
 })
 
 const formatDate = (dateStr) => {
@@ -125,3 +180,126 @@ const accederTache = (id) => {
   console.log(`Naviguer vers la tâche ${id}`)
 }
 </script>
+
+<style scoped>
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.filters-container {
+  margin: 2rem 0;
+}
+
+.search-box {
+  margin-bottom: 1rem;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.filter-group {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-select {
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: white;
+  min-width: 200px;
+}
+
+.btn {
+  padding: 0.8rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background-color: var(--primary-color, #3498db);
+  color: white;
+}
+
+.btn-secondary {
+  background-color: #f8f9fa;
+  color: #2c3e50;
+  border: 1px solid #ddd;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.task-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.badge-warning {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.badge-info {
+  background-color: #cce5ff;
+  color: #004085;
+}
+
+.badge-success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.badge-secondary {
+  background-color: #e2e3e5;
+  color: #383d41;
+}
+
+@media (max-width: 768px) {
+  .filter-group {
+    flex-direction: column;
+  }
+  
+  .filter-select {
+    width: 100%;
+  }
+  
+  .btn {
+    width: 100%;
+  }
+}
+</style>
