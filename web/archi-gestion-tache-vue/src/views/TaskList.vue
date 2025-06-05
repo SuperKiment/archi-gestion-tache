@@ -4,9 +4,9 @@
 
     <div class="filters-container">
       <div class="search-box">
-        <input 
-          type="text" 
-          v-model="searchQuery" 
+        <input
+          type="text"
+          v-model="searchQuery"
           placeholder="Rechercher une tâche..."
           class="search-input"
         >
@@ -52,7 +52,7 @@
         </div>
 
         <div class="task-actions">
-          <router-link :to="`/editTask/${task.idTache}`" class="btn btn-edit">Modifier</router-link>
+          <router-link :to="`/editTask/${task.idTache}`" class="btn btn-primary">Modifier</router-link>
           <button @click="handleDelete(task.idTache)" class="btn btn-delete">Supprimer</button>
         </div>
       </div>
@@ -82,8 +82,8 @@ export default {
       // Filtre par recherche
       if (this.searchQuery) {
         const query = this.searchQuery.toLowerCase();
-        result = result.filter(task => 
-          task.titre.toLowerCase().includes(query) || 
+        result = result.filter(task =>
+          task.titre.toLowerCase().includes(query) ||
           task.description.toLowerCase().includes(query)
         );
       }
@@ -96,7 +96,7 @@ export default {
       // Tri
       result.sort((a, b) => {
         let comparison = 0;
-        
+
         if (this.sortBy === 'dateEcheance') {
           comparison = new Date(a.dateEcheance) - new Date(b.dateEcheance);
         } else if (this.sortBy === 'priorite') {
@@ -330,7 +330,7 @@ export default {
   .filters {
     flex-direction: column;
   }
-  
+
   .filter-select {
     width: 100%;
   }

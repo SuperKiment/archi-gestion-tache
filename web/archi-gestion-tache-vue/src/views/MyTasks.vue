@@ -36,6 +36,14 @@
             <option value="asc">Croissant</option>
             <option value="desc">Décroissant</option>
           </select>
+
+          <button 
+            v-if="tachesFiltrees.length > 0"
+            @click="exportTasks" 
+            class="btn btn-export"
+          >
+            <i class="fas fa-download"></i> Exporter
+          </button>
         </div>
       </div>
     </div>
@@ -179,6 +187,43 @@ const getBadgeClass = (statut) => {
 const accederTache = (id) => {
   console.log(`Naviguer vers la tâche ${id}`)
 }
+
+const exportTasks = () => {
+  // Filtrer uniquement les tâches actives (non terminées)
+  const tachesActives = tachesFiltrees.value.filter(tache => tache.statut !== 'Complétée')
+  
+  // Préparer les données pour l'export
+  const dataToExport = tachesActives.map(tache => ({
+    Titre: tache.titre,
+    Description: tache.description,
+    Statut: tache.statut,
+    'Date d\'échéance': formatDate(tache.echeance)
+  }))
+
+  // Convertir en CSV
+  const headers = Object.keys(dataToExport[0])
+  const csvContent = [
+    headers.join(','),
+    ...dataToExport.map(row => 
+      headers.map(header => 
+        JSON.stringify(row[header] || '')
+      ).join(',')
+    )
+  ].join('\n')
+
+  // Créer et télécharger le fichier
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+  const link = document.createElement('a')
+  const url = URL.createObjectURL(blob)
+  
+  link.setAttribute('href', url)
+  link.setAttribute('download', `taches_actives_${new Date().toISOString().split('T')[0]}.csv`)
+  link.style.visibility = 'hidden'
+  
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
 </script>
 
 <style scoped>
@@ -301,5 +346,21 @@ const accederTache = (id) => {
   .btn {
     width: 100%;
   }
+}
+
+.btn-export {
+  background-color: #2ecc71;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-export:hover {
+  background-color: #27ae60;
+}
+
+.btn-export i {
+  font-size: 0.9rem;
 }
 </style>
